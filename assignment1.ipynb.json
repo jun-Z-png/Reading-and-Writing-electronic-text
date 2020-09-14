@@ -1,0 +1,185 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "A Leonard Cohen personality generator"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 10,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "part1 = [\n",
+    "    'Roshi s very tired'\n",
+    "    'Better than darkness is fake darkness'\n",
+    "    'The only thing I don t need is a comb'\n",
+    "    'Seisen has a long body'\n",
+    "    'By the rivers dark I wandered by'\n",
+    "    'A fresh spiderwed'\n",
+    "    'Leonardos, I am no longer lonely'\n",
+    "    'I am Theodoros'\n",
+    "    'Darling, I now have a butter dish'\n",
+    "    'remembering my mother at a theatre in Athens'\n",
+    "]"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 13,
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 7,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "part2 = [\n",
+    "    \"The Sweet indifference some call fate but we have names more intimate\"\n",
+    "    \"fare thee well my nitingale\"\n",
+    "    \"I'm almost alive I'm almost at home\"\n",
+    "    \"He's going to get sick and die alone\"\n",
+    "    \"let me see the waitress's tiny earrings\"\n",
+    "    \"Puppet vultures eat the dead puppet corpses they are fed\"\n",
+    "    \"She said, don't be a jerk, Len\"\n",
+    "    \"Dear reader, please forgive me if I have wasted your time\"\n",
+    "    \"I love the way the sun speaks\"\n",
+    "    \"it's her ownerless expression\"\n",
+    "]"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 8,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "noun = [\n",
+    "    \"Takanawa Prince Hotel Bar\"\n",
+    "    \"A young nun\"\n",
+    "    \"Your comrade\"\n",
+    "    \"The drunk is gender-free\"\n",
+    "    \"What buffled me\"\n",
+    "    \"The crystal of salt on her eyelashes\"\n",
+    "    \"Alexandra leaving\"\n",
+    "    \"The Moon\"\n",
+    "    \"Lovesick Monk\"\n",
+    "    \"True seolf\"\n",
+    "]"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 1,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "state = [\n",
+    "    \"drink blue coffee\"\n",
+    "    \"sleep in the corner of a cabin\"\n",
+    "    \"forget to suffer\"\n",
+    "    \"by the rivers dark\"\n",
+    "    \"at hiroshima\"\n",
+    "    \"sail around singing\"\n",
+    "    \"filled with fear and desire\"\n",
+    "    \"is speaking fiercely for our virgin humanity \"\n",
+    "    \"is riding the night's last flicker of hope\"\n",
+    "    \"hid in themes of marble\"\n",
+    "]"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 20,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Roshi s very tiredBetter than darkness is fake darknessThe only thing I don t need is a combSeisen has a long bodyBy the rivers dark I wandered byA fresh spiderwedLeonardos, I am no longer lonelyI am TheodorosDarling, I now have a butter dishremembering my mother at a theatre in Athens\n",
+      "  The Sweet indifference some call fate but we have names more intimatefare thee well my nitingaleI'm almost alive I'm almost at homeHe's going to get sick and die alonelet me see the waitress's tiny earringsPuppet vultures eat the dead puppet corpses they are fedShe said, don't be a jerk, LenDear reader, please forgive me if I have wasted your timeI love the way the sun speaksit's her ownerless expression\n",
+      "     drink blue coffeesleep in the corner of a cabinforget to sufferby the rivers dark\n",
+      "        Takanawa Prince Hotel BarA young nunYour comradeThe drunk is gender-freeWhat buffled meThe crystal of salt on her eyelashesAlexandra leavingThe MoonLovesick MonkTrue seolf\n",
+      "\n",
+      "  The Sweet indifference some call fate but we have names more intimatefare thee well my nitingaleI'm almost alive I'm almost at homeHe's going to get sick and die alonelet me see the waitress's tiny earringsPuppet vultures eat the dead puppet corpses they are fedShe said, don't be a jerk, LenDear reader, please forgive me if I have wasted your timeI love the way the sun speaksit's her ownerless expression\n",
+      "Roshi s very tiredBetter than darkness is fake darknessThe only thing I don t need is a combSeisen has a long bodyBy the rivers dark I wandered byA fresh spiderwedLeonardos, I am no longer lonelyI am TheodorosDarling, I now have a butter dishremembering my mother at a theatre in Athens\n",
+      "\n",
+      "Roshi s very tiredBetter than darkness is fake darknessThe only thing I don t need is a combSeisen has a long bodyBy the rivers dark I wandered byA fresh spiderwedLeonardos, I am no longer lonelyI am TheodorosDarling, I now have a butter dishremembering my mother at a theatre in Athens\n",
+      "  The Sweet indifference some call fate but we have names more intimatefare thee well my nitingaleI'm almost alive I'm almost at homeHe's going to get sick and die alonelet me see the waitress's tiny earringsPuppet vultures eat the dead puppet corpses they are fedShe said, don't be a jerk, LenDear reader, please forgive me if I have wasted your timeI love the way the sun speaksit's her ownerless expression\n",
+      "     drink blue coffeesleep in the corner of a cabinforget to sufferby the rivers dark\n",
+      "        Takanawa Prince Hotel BarA young nunYour comradeThe drunk is gender-freeWhat buffled meThe crystal of salt on her eyelashesAlexandra leavingThe MoonLovesick MonkTrue seolf\n",
+      "\n",
+      "  The Sweet indifference some call fate but we have names more intimatefare thee well my nitingaleI'm almost alive I'm almost at homeHe's going to get sick and die alonelet me see the waitress's tiny earringsPuppet vultures eat the dead puppet corpses they are fedShe said, don't be a jerk, LenDear reader, please forgive me if I have wasted your timeI love the way the sun speaksit's her ownerless expression\n",
+      "Roshi s very tiredBetter than darkness is fake darknessThe only thing I don t need is a combSeisen has a long bodyBy the rivers dark I wandered byA fresh spiderwedLeonardos, I am no longer lonelyI am TheodorosDarling, I now have a butter dishremembering my mother at a theatre in Athens\n",
+      "\n",
+      "Roshi s very tiredBetter than darkness is fake darknessThe only thing I don t need is a combSeisen has a long bodyBy the rivers dark I wandered byA fresh spiderwedLeonardos, I am no longer lonelyI am TheodorosDarling, I now have a butter dishremembering my mother at a theatre in Athens\n",
+      "  The Sweet indifference some call fate but we have names more intimatefare thee well my nitingaleI'm almost alive I'm almost at homeHe's going to get sick and die alonelet me see the waitress's tiny earringsPuppet vultures eat the dead puppet corpses they are fedShe said, don't be a jerk, LenDear reader, please forgive me if I have wasted your timeI love the way the sun speaksit's her ownerless expression\n",
+      "     drink blue coffeesleep in the corner of a cabinforget to sufferby the rivers dark\n",
+      "        Takanawa Prince Hotel BarA young nunYour comradeThe drunk is gender-freeWhat buffled meThe crystal of salt on her eyelashesAlexandra leavingThe MoonLovesick MonkTrue seolf\n",
+      "\n",
+      "  The Sweet indifference some call fate but we have names more intimatefare thee well my nitingaleI'm almost alive I'm almost at homeHe's going to get sick and die alonelet me see the waitress's tiny earringsPuppet vultures eat the dead puppet corpses they are fedShe said, don't be a jerk, LenDear reader, please forgive me if I have wasted your timeI love the way the sun speaksit's her ownerless expression\n",
+      "Roshi s very tiredBetter than darkness is fake darknessThe only thing I don t need is a combSeisen has a long bodyBy the rivers dark I wandered byA fresh spiderwedLeonardos, I am no longer lonelyI am TheodorosDarling, I now have a butter dishremembering my mother at a theatre in Athens\n",
+      "\n"
+     ]
+    }
+   ],
+   "source": [
+    "import random\n",
+    "import textwrap\n",
+    "stanza_size = 3\n",
+    "for i in range(stanza_size):\n",
+    "    print(random.choice(part1))\n",
+    "    print(\"  \" + random.choice(part2))\n",
+    "    print(\"     \" + random.choice(state))\n",
+    "    print(\"        \" + random.choice(noun))\n",
+    "    print()\n",
+    "    print(\"  \" + random.choice(part2))\n",
+    "    print(random.choice(part1))\n",
+    "    print()\n",
+    "    "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.8.3"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 4
+}
