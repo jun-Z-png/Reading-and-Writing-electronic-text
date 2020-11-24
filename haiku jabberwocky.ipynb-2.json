@@ -1,0 +1,692 @@
+{
+ "cells": [
+  {
+   "cell_type": "code",
+   "execution_count": 7,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import numpy as np\n",
+    "import pronouncing as pr"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 1,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "Using TensorFlow backend.\n"
+     ]
+    }
+   ],
+   "source": [
+    "from pincelate import Pincelate"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 5,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "WARNING:tensorflow:From /Users/zhourunqi/opt/anaconda3/envs/rwet-pincelate/lib/python3.7/site-packages/keras/backend/tensorflow_backend.py:541: The name tf.placeholder is deprecated. Please use tf.compat.v1.placeholder instead.\n",
+      "\n",
+      "WARNING:tensorflow:From /Users/zhourunqi/opt/anaconda3/envs/rwet-pincelate/lib/python3.7/site-packages/keras/backend/tensorflow_backend.py:66: The name tf.get_default_graph is deprecated. Please use tf.compat.v1.get_default_graph instead.\n",
+      "\n",
+      "WARNING:tensorflow:From /Users/zhourunqi/opt/anaconda3/envs/rwet-pincelate/lib/python3.7/site-packages/keras/backend/tensorflow_backend.py:4432: The name tf.random_uniform is deprecated. Please use tf.random.uniform instead.\n",
+      "\n",
+      "WARNING:tensorflow:From /Users/zhourunqi/opt/anaconda3/envs/rwet-pincelate/lib/python3.7/site-packages/keras/backend/tensorflow_backend.py:148: The name tf.placeholder_with_default is deprecated. Please use tf.compat.v1.placeholder_with_default instead.\n",
+      "\n",
+      "WARNING:tensorflow:From /Users/zhourunqi/opt/anaconda3/envs/rwet-pincelate/lib/python3.7/site-packages/keras/backend/tensorflow_backend.py:3733: calling dropout (from tensorflow.python.ops.nn_ops) with keep_prob is deprecated and will be removed in a future version.\n",
+      "Instructions for updating:\n",
+      "Please use `rate` instead of `keep_prob`. Rate should be set to `rate = 1 - keep_prob`.\n",
+      "WARNING:tensorflow:From /Users/zhourunqi/opt/anaconda3/envs/rwet-pincelate/lib/python3.7/site-packages/keras/backend/tensorflow_backend.py:3239: where (from tensorflow.python.ops.array_ops) is deprecated and will be removed in a future version.\n",
+      "Instructions for updating:\n",
+      "Use tf.where in 2.0, which has the same broadcast rule as np.where\n",
+      "WARNING:tensorflow:From /Users/zhourunqi/opt/anaconda3/envs/rwet-pincelate/lib/python3.7/site-packages/keras/backend/tensorflow_backend.py:190: The name tf.get_default_session is deprecated. Please use tf.compat.v1.get_default_session instead.\n",
+      "\n",
+      "WARNING:tensorflow:From /Users/zhourunqi/opt/anaconda3/envs/rwet-pincelate/lib/python3.7/site-packages/keras/backend/tensorflow_backend.py:197: The name tf.ConfigProto is deprecated. Please use tf.compat.v1.ConfigProto instead.\n",
+      "\n",
+      "WARNING:tensorflow:From /Users/zhourunqi/opt/anaconda3/envs/rwet-pincelate/lib/python3.7/site-packages/keras/backend/tensorflow_backend.py:203: The name tf.Session is deprecated. Please use tf.compat.v1.Session instead.\n",
+      "\n",
+      "WARNING:tensorflow:From /Users/zhourunqi/opt/anaconda3/envs/rwet-pincelate/lib/python3.7/site-packages/keras/backend/tensorflow_backend.py:207: The name tf.global_variables is deprecated. Please use tf.compat.v1.global_variables instead.\n",
+      "\n",
+      "WARNING:tensorflow:From /Users/zhourunqi/opt/anaconda3/envs/rwet-pincelate/lib/python3.7/site-packages/keras/backend/tensorflow_backend.py:216: The name tf.is_variable_initialized is deprecated. Please use tf.compat.v1.is_variable_initialized instead.\n",
+      "\n",
+      "WARNING:tensorflow:From /Users/zhourunqi/opt/anaconda3/envs/rwet-pincelate/lib/python3.7/site-packages/keras/backend/tensorflow_backend.py:223: The name tf.variables_initializer is deprecated. Please use tf.compat.v1.variables_initializer instead.\n",
+      "\n"
+     ]
+    }
+   ],
+   "source": [
+    "pin=Pincelate()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 8,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import ipywidgets as widgets\n",
+    "from IPython.display import display\n",
+    "from ipywidgets import interact, interactive_output, Layout, HBox, VBox"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "1. phoneme features of haikus(1st version)\n",
+    "2. noising them+ phonemo features( 3 other versions)\n",
+    "3. changing the english"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 247,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "haiku=open(\"haiku.jap\").read()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 248,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "haiku_lines=haiku.splitlines()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 249,
+   "metadata": {
+    "scrolled": true
+   },
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "['古池や\\u3000蛙飛び込む\\u3000水の音',\n",
+       " 'furuike ya kawazu tobikomu mizu no oto',\n",
+       " '春の海\\u3000ひねもすのたり\\u3000のたりかな',\n",
+       " 'haruno-umi hinemosu-notari notarikana',\n",
+       " '痩蛙\\u3000負けるな一茶\\u3000是にあり',\n",
+       " 'yase gaeru makeruna issa kore ni ari',\n",
+       " '菜の花や 月は東に 日は西に',\n",
+       " 'na-no-hana ya tsuki ha higashi ni hi wa nishi ni',\n",
+       " '閑けさや\\u3000岩にしみいる\\u3000蝉の声',\n",
+       " 'shizukesa ya iwa ni shimiiru semi no koe',\n",
+       " '柿くへば\\u3000鐘が鳴るなり\\u3000法隆寺',\n",
+       " 'kaki kueba kane ga naru nari horyuji',\n",
+       " '目には青葉 山ほとゝぎす はつ松魚',\n",
+       " 'me ni wa aoba yama hototogisu hatsu gatsuo',\n",
+       " '降る雪や 明治は遠く なりにけり',\n",
+       " 'furu yuki ya meiji wa toku nari ni keri',\n",
+       " '朝顔に 釣瓶とられて もらひ水',\n",
+       " 'asagao ni tsurube torare te morai mizu',\n",
+       " '梅一輪 一輪ほどの 暖かさ',\n",
+       " 'ume ichi rin ichi rin hodo no atatakasa']"
+      ]
+     },
+     "execution_count": 249,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "haiku_lines"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 112,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "haiku_words=haiku.split()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 114,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from pincelate.featurephone import phone_feature_map"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 253,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "'なりにけり'"
+      ]
+     },
+     "execution_count": 253,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "haiku_words[73]"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 116,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "sound=pin.soundout(\"atatakasa\")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "generate a tutorial to the sound of haikus"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 254,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "def textbook(list=haiku_lines):\n",
+    "    words_phoneme=[]\n",
+    "    for i in range(20):\n",
+    "            if i%2==0:\n",
+    "                words_phoneme.append(haiku_lines[i])\n",
+    "            if i%2!=0:\n",
+    "                words_phoneme.append(haiku_lines[i])\n",
+    "                words=haiku_lines[i].split()\n",
+    "                for item in words:\n",
+    "                    lines_phoneme=[]\n",
+    "                    lines_phoneme.append(pin.soundout(item))\n",
+    "                    words_phoneme.append(lines_phoneme)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 255,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "['古池や\\u3000蛙飛び込む\\u3000水の音',\n",
+       " 'furuike ya kawazu tobikomu mizu no oto',\n",
+       " [['F', 'Y', 'UW1', 'R', 'IH0', 'K']],\n",
+       " [['Y', 'AA1']],\n",
+       " [['K', 'AA0', 'W', 'AA1', 'Z', 'UW0']],\n",
+       " [['T', 'UH1', 'B', 'IH0', 'K', 'OW1', 'M', 'UW0']],\n",
+       " [['M', 'IH1', 'Z', 'UW0']],\n",
+       " [['N', 'OW1']],\n",
+       " [['OW1', 'T', 'OW0']],\n",
+       " '春の海\\u3000ひねもすのたり\\u3000のたりかな',\n",
+       " 'haruno-umi hinemosu-notari notarikana',\n",
+       " [['HH', 'AA1', 'R', 'UW0', 'N', 'UW1', 'M', 'IY0']],\n",
+       " [['HH', 'IH1', 'N', 'AH0', 'M', 'AH0', 'S', 'AA1', 'N', 'ER1', 'T', 'IY0']],\n",
+       " [['N', 'OW0', 'T', 'AA0', 'R', 'IH0', 'K', 'AE1', 'N', 'AH0']],\n",
+       " '痩蛙\\u3000負けるな一茶\\u3000是にあり',\n",
+       " 'yase gaeru makeruna issa kore ni ari',\n",
+       " [['Y', 'AE1', 'S']],\n",
+       " [['G', 'AE1', 'R', 'UW0']],\n",
+       " [['M', 'AE0', 'K', 'ER0', 'UW1', 'N', 'AH0']],\n",
+       " [['IH1', 'S', 'AH0']],\n",
+       " [['K', 'AO1', 'R']],\n",
+       " [['N', 'IH1']],\n",
+       " [['AA1', 'R', 'IY0']],\n",
+       " '菜の花や\\u3000月は東に\\u3000日は西に',\n",
+       " 'na-no-hana ya tsuki ha higashi ni hi wa nishi ni',\n",
+       " [['N', 'AA1', 'N', 'OW0', 'HH', 'AE1', 'N', 'AH0']],\n",
+       " [['Y', 'AA1']],\n",
+       " [['T', 'S', 'UW1', 'K', 'IY0']],\n",
+       " [['HH', 'AA1']],\n",
+       " [['HH', 'IY0', 'G', 'AA1', 'SH', 'IY0']],\n",
+       " [['N', 'IH1']],\n",
+       " [['HH', 'AY1']],\n",
+       " [['W', 'AA1']],\n",
+       " [['N', 'IY1', 'SH', 'IY0']],\n",
+       " [['N', 'IH1']],\n",
+       " '閑けさや\\u3000岩にしみいる\\u3000蝉の声',\n",
+       " 'shizukesa ya iwa ni shimiiru semi no koe',\n",
+       " [['SH', 'IY0', 'Z', 'UW1', 'K', 'EH1', 'S', 'AH0']],\n",
+       " [['Y', 'AA1']],\n",
+       " [['AY1', 'W', 'AH0']],\n",
+       " [['N', 'IH1']],\n",
+       " [['SH', 'IH0', 'M', 'IY1', 'R', 'UW0']],\n",
+       " [['S', 'EH1', 'M', 'IY0']],\n",
+       " [['N', 'OW1']],\n",
+       " [['K', 'OW1']],\n",
+       " '柿くへば\\u3000鐘が鳴るなり\\u3000法隆寺',\n",
+       " 'kaki kueba kane ga naru nari horyuji',\n",
+       " [['K', 'AA1', 'K', 'IY0']],\n",
+       " [['K', 'W', 'EH1', 'B', 'AH0']],\n",
+       " [['K', 'EY1', 'N']],\n",
+       " [['G', 'AA1']],\n",
+       " [['N', 'AA1', 'R', 'UW0']],\n",
+       " [['N', 'AA1', 'R', 'IY0']],\n",
+       " [['HH', 'AO1', 'R', 'Y', 'UW1', 'R', 'IY0']],\n",
+       " '目には青葉 山ほとゝぎす はつ松魚',\n",
+       " 'me ni wa aoba yama hototogisu hatsu gatsuo',\n",
+       " [['M', 'IH1']],\n",
+       " [['N', 'IH1']],\n",
+       " [['W', 'AA1']],\n",
+       " [['AA1', 'B', 'AH0']],\n",
+       " [['Y', 'AA1', 'M', 'AH0']],\n",
+       " [['HH', 'OW1', 'T', 'AH0', 'T', 'UH1', 'JH', 'IY0']],\n",
+       " [['HH', 'AE1', 'T', 'S', 'UW0']],\n",
+       " [['G', 'AE1', 'T', 'S', 'UW0', 'OW0']],\n",
+       " '降る雪や 明治は遠く なりにけり',\n",
+       " 'furu yuki ya meiji wa toku nari ni keri',\n",
+       " [['F', 'UH1', 'R', 'UW0']],\n",
+       " [['Y', 'UW1', 'K', 'IY0']],\n",
+       " [['Y', 'AA1']],\n",
+       " [['M', 'EY1', 'JH', 'IY0']],\n",
+       " [['W', 'AA1']],\n",
+       " [['T', 'OW1', 'K', 'UW0']],\n",
+       " [['N', 'AA1', 'R', 'IY0']],\n",
+       " [['N', 'IH1']],\n",
+       " [['K', 'EH1', 'R', 'IY0']],\n",
+       " '朝顔に 釣瓶とられて もらひ水',\n",
+       " 'asagao ni tsurube torare te morai mizu',\n",
+       " [['AA1', 'S', 'AA0', 'G', 'AA1']],\n",
+       " [['N', 'IH1']],\n",
+       " [['T', 'R', 'UW1', 'JH', 'UW0']],\n",
+       " [['T', 'AO0', 'R', 'EH1', 'R', 'IY0']],\n",
+       " [['T', 'IY1']],\n",
+       " [['M', 'ER0', 'R', 'AE1']],\n",
+       " [['M', 'IH1', 'Z', 'UW0']],\n",
+       " '梅一輪 一輪ほどの 暖かさ',\n",
+       " 'ume ichi rin ichi rin hodo no atatakasa',\n",
+       " [['Y', 'UW1', 'M']],\n",
+       " [['IH1', 'CH', 'IY0']],\n",
+       " [['R', 'IH1', 'N']],\n",
+       " [['IH1', 'CH', 'IY0']],\n",
+       " [['R', 'IH1', 'N']],\n",
+       " [['HH', 'OW1', 'D', 'OW0']],\n",
+       " [['N', 'OW1']],\n",
+       " [['AA1', 'T', 'AA0', 'T', 'AA0', 'K', 'AA1', 'S', 'AH0']]]"
+      ]
+     },
+     "execution_count": 255,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "words_phoneme"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "change the interactive function in the tutorial"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 157,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "'古池や\\u3000蛙飛び込む\\u3000水の音'"
+      ]
+     },
+     "execution_count": 157,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "words_phoneme[0]"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 134,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "pronounce=open(\"haiku_pro\").read()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 244,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "haiku_jap=open(\"haiku_jap.txt\").read()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 245,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "jap_lines=haiku_jap.splitlines()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 136,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "pro_lines=pronounce.splitlines()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 137,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "['furuike ya kawazu tobikomu mizu no oto',\n",
+       " 'haruno-umi hinemosu-notari notarikana',\n",
+       " 'yase gaeru makeruna issa kore ni ari',\n",
+       " 'na-no-hana ya tsuki ha higashi ni hi wa nishi ni',\n",
+       " 'shizukesa ya iwa ni shimiiru semi no koe',\n",
+       " 'kaki kueba kane ga naru nari horyuji',\n",
+       " 'me ni wa aoba yama hototogisu hatsu gatsuo',\n",
+       " 'furu yuki ya meiji wa toku nari ni keri',\n",
+       " 'asagao ni tsurube torare te morai mizu',\n",
+       " 'ume ichi rin ichi rin hodo no atatakasa']"
+      ]
+     },
+     "execution_count": 137,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "pro_lines"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 250,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "application/vnd.jupyter.widget-view+json": {
+       "model_id": "efce62e7e1674b9dadca7cd4adb8c8af",
+       "version_major": 2,
+       "version_minor": 0
+      },
+      "text/plain": [
+       "interactive(children=(Text(value='furuike ya kawazu tobikomu mizu no oto\\nharuno-umi hinemosu-notari notarikan…"
+      ]
+     },
+     "metadata": {},
+     "output_type": "display_data"
+    }
+   ],
+   "source": [
+    "@interact(line=pronounce,\n",
+    "          multiplier=widgets.FloatSlider(\n",
+    "              min=0, max=2.0, step=0.1, value=1.0, continuous_update=False),\n",
+    "          seed=widgets.IntSlider(min=0, max=10000, continuous_update=False))\n",
+    "def noisytext(line, multiplier, seed):\n",
+    "    # keep random number consistent for same string\n",
+    "    for i in range(10):\n",
+    "        out=[]\n",
+    "        noi=[]\n",
+    "        out_phoneme=[]\n",
+    "        s=pro_lines[i]\n",
+    "        jap=str(jap_lines[i])\n",
+    "        np.random.seed(seed)\n",
+    "        noise = np.random.randn(256)*multiplier\n",
+    "        for w in s.split():\n",
+    "            noi.append(pin.spellstate(pin.phonemestate(w)+noise))\n",
+    "        for item in noi:\n",
+    "            out.append(\" \"+item)\n",
+    "            out_phoneme.append(str(pin.soundout(item)))\n",
+    "        print(\"\".join(jap))\n",
+    "        print(\"\".join(out))\n",
+    "        print(\"\".join(out_phoneme))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 354,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "eng=open(\"haiku.eng\").read()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 355,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "eng_lines=eng.splitlines()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 356,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "['the old pond s frog leaps in sound of the water.',\n",
+       " 'spring ocean swaying gentle all day long.',\n",
+       " 'skinny frog don’t get beaten issa is here',\n",
+       " 'the canola flowers the moon is in the eastern sky the sun is in the western sky.',\n",
+       " 'oh, tranquility penetrating the very rock a cicada’s voice.',\n",
+       " 'when I ate a persimmon the bell rung the horyuji temple',\n",
+       " 'the green leaves for eyes the little cuckoo in the mountain the first bonito of the season',\n",
+       " 'the snow is falling the Meiji era got further away.',\n",
+       " 'the well-bucket is taken by the morning glory going to a neighbour for water.',\n",
+       " 'a single plum blossom it is warm as a single']"
+      ]
+     },
+     "execution_count": 356,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "eng_lines"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "rhyming with english"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 364,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "OW\n",
+      "the old pond s frog leaps in sound of the water.\n",
+      "the old pond s frog leaps in sound of the wator\n",
+      "AH\n",
+      "spring ocean swaying gentle all day long.\n",
+      "spring ocean swaying gentle all day long\n",
+      "IY\n",
+      "skinny frog don’t get beaten issa is here\n",
+      "skinny frog don’t get beaten issa is hoer\n",
+      "IH\n",
+      "the canola flowers the moon is in the eastern sky the sun is in the western sky.\n",
+      "the canola flowers the moon is in the eastern sky the sun is in the western souigh\n",
+      "IH\n",
+      "the canola flowers the moon is in the eastern sky the sun is in the western sky.\n",
+      "the canola flowers the moon is in the eastern sky the sun is in the western cois\n",
+      "OW\n",
+      "oh, tranquility penetrating the very rock a cicada’s voice.\n",
+      "oh, tranquility penetrating the very rock a cicada’s oose\n",
+      "IY\n",
+      "when I ate a persimmon the bell rung the horyuji temple\n",
+      "when I ate a persimmon the bell rung the horyuji tompel\n",
+      "OW\n",
+      "the green leaves for eyes the little cuckoo in the mountain the first bonito of the season\n",
+      "the green leaves for eyes the little cuckoo in the mountain the first bonito of the soeson\n",
+      "IY\n",
+      "the snow is falling the Meiji era got further away.\n",
+      "the snow is falling the Meiji era got further oway\n",
+      "UW\n",
+      "the well-bucket is taken by the morning glory going to a neighbour for water.\n",
+      "the well-bucket is taken by the morning glory going to a neighbour for woter\n",
+      "AH\n",
+      "a single plum blossom it is warm as a single\n",
+      "a single plum blossom it is warm as a songle\n"
+     ]
+    }
+   ],
+   "source": [
+    "for i in range (10):\n",
+    "    lines=pro_lines[i].split()\n",
+    "    for item in lines:\n",
+    "        if item==lines[len(lines)-1]:\n",
+    "            soundlist=pin.soundout(item)\n",
+    "            sound=soundlist[len(soundlist)-1]\n",
+    "            if len(sound)==3:\n",
+    "                    exact_sound=sound[0:2]\n",
+    "            else :\n",
+    "                    exact_sound=sound\n",
+    "            print(exact_sound)\n",
+    "            sound_phone=phone_feature_map[exact_sound]\n",
+    "            eng_line=eng_lines[i]\n",
+    "            print(eng_line)\n",
+    "            eng_words=eng_line.split()\n",
+    "            last_word=eng_words[len(eng_words)-1]\n",
+    "            eng_feature=pin.phonemefeatures(last_word)\n",
+    "            for j in range(len(sound_phone)):\n",
+    "                    eng_feature[1][pin.featureidx(phone[j])] = 1\n",
+    "                    if pin.spellfeatures(eng_feature)!=last_word:\n",
+    "                            new_word=pin.spellfeatures(eng_feature)\n",
+    "                            eng_line_new= eng_line[0: eng_line.rindex(\" \")+1] + new_word\n",
+    "            print(eng_line_new)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 366,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "application/vnd.jupyter.widget-view+json": {
+       "model_id": "18fc4575228b4b46bd49a1ff06443fd8",
+       "version_major": 2,
+       "version_minor": 0
+      },
+      "text/plain": [
+       "interactive(children=(Text(value='furuike ya kawazu tobikomu mizu no oto\\nharuno-umi hinemosu-notari notarikan…"
+      ]
+     },
+     "metadata": {},
+     "output_type": "display_data"
+    }
+   ],
+   "source": [
+    "@interact(line=pronounce,\n",
+    "          multiplier=widgets.FloatSlider(\n",
+    "              min=0, max=2.0, step=0.1, value=1.0, continuous_update=False),\n",
+    "          seed=widgets.IntSlider(min=0, max=10000, continuous_update=False))\n",
+    "def noisytext(line, multiplier, seed):\n",
+    "    # keep random number consistent for same string\n",
+    "    for i in range(10):\n",
+    "        out=[]\n",
+    "        noi=[]\n",
+    "        out_phoneme=[]\n",
+    "        s=pro_lines[i]\n",
+    "        jap=str(jap_lines[i])\n",
+    "        np.random.seed(seed)\n",
+    "        noise = np.random.randn(256)*multiplier\n",
+    "        for w in s.split():\n",
+    "            noi.append(pin.spellstate(pin.phonemestate(w)+noise))\n",
+    "        for item in noi:\n",
+    "            out.append(\" \"+item)\n",
+    "            out_phoneme.append(str(pin.soundout(item)))\n",
+    "            if item==noi[len(noi)-1]:\n",
+    "                soundlist=pin.soundout(item)\n",
+    "                sound=soundlist[len(soundlist)-1]\n",
+    "                if len(sound)==3:\n",
+    "                    exact_sound=sound[0:2]\n",
+    "                else :\n",
+    "                    exact_sound=sound\n",
+    "                sound_phone=phone_feature_map[exact_sound]\n",
+    "                eng_line=eng_lines[i]\n",
+    "                eng_words=eng_line.split()\n",
+    "                last_word=eng_words[len(eng_words)-1]\n",
+    "                eng_feature=pin.phonemefeatures(last_word)\n",
+    "                for j in range(len(sound_phone)):\n",
+    "                        eng_feature[1][pin.featureidx(phone[j])] = 1\n",
+    "                        if pin.spellfeatures(eng_feature)!=last_word:\n",
+    "                            new_word=pin.spellfeatures(eng_feature)\n",
+    "                            eng_lines_new = eng_line[0: eng_line.rindex(\" \")+1] + new_word\n",
+    "        print(\"\".join(eng_lines_new))\n",
+    "        print(\"\".join(jap))\n",
+    "        print(\"\".join(out))\n",
+    "        print(\"\".join(out_phoneme))"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.8.3"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 4
+}
